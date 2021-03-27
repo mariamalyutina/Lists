@@ -630,30 +630,30 @@ namespace ListsTests
             Assert.AreEqual(expected, actual);
         }
 
-        //[TestCase(new int[] { 1, 2, 3, 4, 5 }, new int[] { 99, 88, 77, 5, 4, 3, 2, 1, 100, 200 })]
-        //public void AllMethodsTest(int[] inputArray, int[] expectedArray)
-        //{
-        //    ArrayList expected = new ArrayList(expectedArray);
-        //    ArrayList actual = new ArrayList(inputArray);
-        //    actual.Add(8);
-        //    actual.AddAtFirstIndex(100);
-        //    actual.AddAtIndex(20, 3);
-        //    actual.Remove();
-        //    actual.RemoveAtFirstIndex();
-        //    actual.RemoveByIndex(1);
-        //    actual.Add(9);
-        //    actual.RemoveLastValues(3);
-        //    actual.AddAtFirstIndex(100);
-        //    actual.AddAtFirstIndex(25);
-        //    actual.RemoveFirstValues(2);
-        //    actual.AddArrayListByIndex(new ArrayList(new int[] { 2, 3, 4, 5 }), 1);
-        //    actual.RemoveValuesByIndex(5, 2);
-        //    actual.Reverse();
-        //    actual.SortAscending();
-        //    actual.SortDescending();
-        //    actual.AddArrayList(new ArrayList(new int[] { 100, 200 }));
-        //    actual.AddArrayListAtBeginning(new ArrayList(new int[] { 99, 88, 77 }));
-        //    Assert.AreEqual(expected, actual);
-        //}
+        [TestCase(new int[] { 1, 2, 3, 4, 5 }, new int[] { 99, 88, 77, 5, 4, 3, 2, 1, 100, 200 })]
+        public void AllMethodsTest(int[] inputArray, int[] expectedArray)
+        {
+            ArrayList expected = new ArrayList(expectedArray);
+            ArrayList actual = new ArrayList(inputArray);
+            actual.Add(8);
+            actual.AddAtFirstIndex(100);
+            actual.AddAtIndex(20, 3);
+            actual.Remove();
+            actual.RemoveAtFirstIndex();
+            actual.RemoveByIndex(1);
+            actual.Add(9);
+            actual.RemoveLastValues(3);
+            actual.AddAtFirstIndex(100);
+            actual.AddAtFirstIndex(25);
+            actual.RemoveFirstValues(2);
+            actual.AddArrayListByIndex(new ArrayList(new int[] { 2, 3, 4, 5 }), 1);
+            actual.RemoveValuesByIndex(5, 2);
+            actual.Reverse();
+            actual.SortAscending();
+            actual.SortDescending();
+            actual.AddArrayList(new ArrayList(new int[] { 100, 200 }));
+            actual.AddArrayListAtBeginning(new ArrayList(new int[] { 99, 88, 77 }));
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

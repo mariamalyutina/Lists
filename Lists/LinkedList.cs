@@ -74,10 +74,10 @@ namespace Lists
         //добавление значения по индексу
         public void AddAtIndex(int value, int index)
         {
-            if (index >= Length + 1 || index < 0)
+            if (index > Length  || index < 0)
             {
                 throw new IndexOutOfRangeException();
-            } //отдельная проверка, так как тут можно добавить в пустой массив на нулевой индекс
+            } //отдельная проверка, так как тут можно добавить в пустой массив на индекс Length
 
             if (Length == 0)
             {

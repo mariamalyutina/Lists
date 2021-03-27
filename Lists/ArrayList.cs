@@ -62,21 +62,21 @@ namespace Lists
         //добавление значения по индексу
         public void AddAtIndex(int value, int index)
         {
-            if (index >= Length + 1 || index < 0)
+            if (index > Length || index < 0)
             {
                 throw new IndexOutOfRangeException();
-            }
+            } //отдельная проверка на индекс, так как можем добавить в конец (на Length)
             if (Length == _array.Length)
             {
                 UpSize();
             }
-            Length++;
+            //Length++;
             ShiftArrayToTheRight(index);
             _array[index] = value;
         }
 
         //удаление из конца одного элемента
-        public void Remove(int count = 1)
+        public void Remove()
         {
             RemoveByIndex(Length - 1);
         }
@@ -93,7 +93,6 @@ namespace Lists
             CheckIndex(index);
             CheckArrayIsNotEmpty();
             ShiftArrayToTheLeft(index, count);
-            Length -= count;
             if (Length < _array.Length * 0.5)
             {
                 DownSize();
@@ -117,7 +116,6 @@ namespace Lists
         //удаление по индексу N элементов
         public void RemoveValuesByIndex(int index, int count)
         {
-            CheckIndex(index);
             CheckCountArgumentIsValid(count);
             CheckArrayHasEnoughElements(index, count);
             RemoveByIndex(index, count);
@@ -278,14 +276,13 @@ namespace Lists
         {
             CheckArgumentIsNotNull(list);
 
-            if (index >= Length + 1 || index < 0)
+            if (index > Length || index < 0)
             {
                 throw new IndexOutOfRangeException();
-            }
+            } //отдельная проверка на индекс, так как можем добавить в конец (на Length)
 
             int newLength = Length + list.Length;
             CheckNewLength(newLength);
-            Length = newLength;
 
             int tmp = index + list.Length;
 
@@ -330,7 +327,7 @@ namespace Lists
         {
             if (newLength == 0)
             {
-                newLength = (int)(_array.Length * 0.67d + 1);
+                newLength = (int)(_array.Length * 1.33d + 1);
             }
             else
             {
@@ -346,7 +343,7 @@ namespace Lists
 
         private void DownSize()
         {
-            int newLength = (int)(_array.Length / 1.33d + 1);
+            int newLength = (int)(_array.Length * 0.67 + 1);
             int[] tmpArray = new int[newLength];
             for (int i = 0; i < newLength; i++)
             {
@@ -357,6 +354,7 @@ namespace Lists
 
         private void ShiftArrayToTheRight(int fromIndex, int steps = 1)
         {
+            Length += steps;
             for (int i = Length - 1; i > fromIndex; i--)
             {
                 _array[i] = _array[i - steps];
@@ -369,6 +367,7 @@ namespace Lists
             {
                 _array[i] = _array[i + steps];
             }
+            Length -= steps;
         }
 
         private void CheckArrayIsNotEmpty()
