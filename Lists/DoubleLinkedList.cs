@@ -1,8 +1,9 @@
 ﻿using System;
 
+
 namespace Lists
 {
-    public class LinkedList: ILinkedList
+    public class DoubleLinkedList : ILinkedList
     {
         public int Length { get; private set; }
 
@@ -21,32 +22,36 @@ namespace Lists
             }
         }
 
-        private Node _head; //первый элемент
-        private Node _tail; //последний элемент
+        private DoubleNode _head; //первый элемент
+        private DoubleNode _tail; //последний элемент
 
-        public LinkedList()
+        public DoubleLinkedList()
         {
             CreateEmptyList();
         }
 
-        public LinkedList(int value)
+        public DoubleLinkedList(int value)
         {
             CreateListWithOneElement(value);
         }
 
-        public LinkedList(int[] inputArray)
+        public DoubleLinkedList(int[] inputArray)
         {
             if (inputArray is null)
             {
                 throw new NullReferenceException();
             }
-
-            if (inputArray.Length > 0)
+            else if (inputArray.Length > 0)
             {
                 CreateListWithOneElement(inputArray[0]);
+
                 for (int i = 1; i < inputArray.Length; i++)
                 {
-
+                    if (i == 1) //перепресвоение _head.Next с null на след элемент,
+                                //если в массиве 2 и более элементов
+                    {
+                        _head.Next = new DoubleNode(inputArray[1]);
+                    }
                     Add(inputArray[i]);
                 }
             }
@@ -71,35 +76,37 @@ namespace Lists
         //добавление значения по индексу
         public void AddAtIndex(int value, int index)
         {
-            if (index > Length  || index < 0)
+            if (index > Length || index < 0)
             {
                 throw new IndexOutOfRangeException();
             } //отдельная проверка, так как тут можно добавить в пустой массив на индекс Length
-
+            DoubleNode tmp = new DoubleNode(value);
             if (Length == 0)
             {
                 CreateListWithOneElement(value);
             }
             else if (index == 0)
             {
-                Node current = new Node(value);
-                current.Next = _head;
-                _head = current;
+                tmp.Prev = null;
+                tmp.Next = _head;
+                _head.Prev = tmp;
+                _head = tmp;
                 Length++;
             }
             else if (index == Length)
             {
-                _tail.Next = new Node(value);
-                _tail = _tail.Next;
+                tmp.Next = null;
+                tmp.Prev = _tail;
+                _tail.Next = tmp;
+                _tail = tmp;
                 Length++;
             }
             else
             {
-                int prevIndex = index - 1; //мы меняем ссылку в предыдущем элементе
-                Node current = GetNodeByIndex(prevIndex); 
-                Node tmp = new Node(value);
-                tmp.Next = current.Next;
-                current.Next = tmp;
+                tmp.Next = GetNodeByIndex(index);
+                tmp.Prev = GetNodeByIndex(index).Prev;
+                tmp.Next.Prev = tmp;
+                tmp.Prev.Next = tmp;
                 Length++;
             }
         }
@@ -128,19 +135,17 @@ namespace Lists
             else if (index == 0)
             {
                 _head = _head.Next;
+                _head.Prev = null;
             }
             else if (index == Length - 1)
             {
-                int prevIndex = index - 1;
-                Node current = GetNodeByIndex(prevIndex);
-                current.Next = null; //удаляем ссылку на последний элемент
-                _tail = current;
+                _tail = _tail.Prev;
+                _tail.Next = null;
             }
             else
             {
-                int prevIndex = index - 1;
-                Node current = GetNodeByIndex(prevIndex);
-                current.Next = current.Next.Next;
+                GetNodeByIndex(index).Prev.Next = GetNodeByIndex(index).Next;
+                GetNodeByIndex(index).Next.Prev = GetNodeByIndex(index).Prev;
             }
             Length = Length == 0 ? 0 : --Length;
         }
@@ -153,6 +158,7 @@ namespace Lists
         //удаление из конца N элементов
         public void RemoveLastValues(int count)
         {
+            //переиспользовать RemoveValuesByIndex
             CheckCountArgumentIsValid(count);
             CheckListHasEnoughElementsOrNotEmpty(count);
 
@@ -160,12 +166,11 @@ namespace Lists
             {
                 CreateEmptyList();
             }
-            else
+            else if (count > 0) //если count = 0 - ничего менять не нужно
             {
-                int prevIndex = Length - count - 1;
-                Node current = GetNodeByIndex(prevIndex);
-                current.Next = null;
-                _tail = current;
+                int index = Length - count;
+                _tail = GetNodeByIndex(index).Prev;
+                _tail.Next = null;
                 Length -= count;
             }
         }
@@ -195,20 +200,22 @@ namespace Lists
             else if (index == 0) //удаление сначала не до конца
             {
                 _head = GetNodeByIndex(count);
+                _head.Prev = null;
                 Length -= count;
             }
             else //если удаление с 1го индекса
             {
-                int prevIndex = index - 1;
-                Node current = GetNodeByIndex(prevIndex);
+                
                 if (Length - index == count) //если удаляются элементы до конца
                 {
-                    _tail = current;
+                    _tail = GetNodeByIndex(index).Prev;
                     _tail.Next = null;
                 }
-                else //если удаляются элементы не до конца
+                else if (count > 0) //если удаляются элементы не до конца
                 {
-                    current.Next = GetNodeByIndex(index + count);
+                    int lastIndex = index + count;
+                    GetNodeByIndex(lastIndex).Prev = GetNodeByIndex(index).Prev;
+                    GetNodeByIndex(index).Prev.Next = GetNodeByIndex(lastIndex);
                 }
                 Length -= count;
             }
@@ -230,18 +237,21 @@ namespace Lists
         //реверс (123 -> 321)
         public void Reverse()
         {
-            Node current = _head;
-            Node previous = null;
-            Node next = null;
-            _tail = _head;
+            //_tail = _head;
+            DoubleNode current = _head;
+            DoubleNode tmp = null;
             while (!(current is null))
             {
-                next = current.Next;
-                current.Next = previous;
-                previous = current;
-                current = next;
+                tmp = current.Prev;
+                current.Prev = current.Next;
+                current.Next = tmp;
+                current = current.Prev;
             }
-            _head = previous;
+            if (!(tmp is null))
+            {
+                _tail = GetNodeByIndex(0);
+                _head = tmp.Prev;
+            }
         }
 
         //поиск значения максимального элемента
@@ -299,7 +309,7 @@ namespace Lists
             {
                 for (int j = i + 1; j > 0; j--)
                 {
-                    if (GetNodeByIndex(j).Value < GetNodeByIndex(j - 1).Value)
+                    if (GetNodeByIndex(j).Value < GetNodeByIndex(j).Prev.Value)
                     {
                         Swap(j);
                     }
@@ -314,7 +324,7 @@ namespace Lists
             {
                 for (int j = i + 1; j > 0; j--)
                 {
-                    if (GetNodeByIndex(j).Value > GetNodeByIndex(j - 1).Value)
+                    if (GetNodeByIndex(j).Value > GetNodeByIndex(j).Prev.Value)
                     {
                         Swap(j);
                     }
@@ -374,7 +384,7 @@ namespace Lists
                 throw new IndexOutOfRangeException();
             }
 
-            LinkedList copyList = CopyList(list);
+            DoubleLinkedList copyList = CopyList(list);
 
             if (this.Length == 0) //добавление к пустому листу
             {
@@ -386,18 +396,21 @@ namespace Lists
                 if (index == 0) //добавление в начало
                 {
                     copyList._tail.Next = this._head;
+                    this._head.Prev = copyList._tail;
                     _head = copyList._head;
                 }
                 else if (index == Length) //добавление в конец
                 {
                     _tail.Next = copyList._head;
+                    copyList._head.Prev = this._tail;
                     _tail = copyList._tail;
                 }
                 else //добавление в середину
                 {
                     copyList._tail.Next = this.GetNodeByIndex(index);
-                    int prevIndex = index - 1;
-                    this.GetNodeByIndex(prevIndex).Next = copyList._head;
+                    this.GetNodeByIndex(index).Prev.Next = copyList._head;
+                    copyList._head.Prev = this.GetNodeByIndex(index).Prev;
+                    this.GetNodeByIndex(index).Prev = copyList._tail;
                 }
             }
             this.Length += copyList.Length;
@@ -408,7 +421,7 @@ namespace Lists
             string s = "";
             if (Length != 0)
             {
-                Node current = _head;
+                DoubleNode current = _head;
                 s += current.Value;
                 while (!(current.Next is null))
                 {
@@ -422,7 +435,7 @@ namespace Lists
 
         public override bool Equals(object obj)
         {
-            LinkedList list = (LinkedList)obj;
+            DoubleLinkedList list = (DoubleLinkedList)obj;
             if (Length != list.Length)
             {
                 return false;
@@ -433,8 +446,8 @@ namespace Lists
                 return true;
             }
 
-            Node currentThis = _head;
-            Node currentList = list._head;
+            DoubleNode currentThis = _head;
+            DoubleNode currentList = list._head;
 
             if (currentThis.Value != currentList.Value)
             {
@@ -454,15 +467,6 @@ namespace Lists
             return true;
         }
 
-        private Node GetNodeByIndex(int index)
-        {
-            Node current = _head;
-            for (int i = 1; i <= index; i++)
-            {
-                current = current.Next;
-            }
-            return current;
-        }
 
         private void CreateEmptyList()
         {
@@ -474,8 +478,30 @@ namespace Lists
         private void CreateListWithOneElement(int value)
         {
             Length = 1;
-            _head = new Node(value);
+            _head = new DoubleNode(value);
             _tail = _head;
+        }
+
+        private DoubleNode GetNodeByIndex(int index)
+        {
+            if (index < Length / 2) //если индекс ближе к началу, идем сначала
+            {
+                DoubleNode current = _head;
+                for (int i = 1; i <= index; i++)
+                {
+                    current = current.Next;
+                }
+                return current;
+            }
+            else
+            {
+                DoubleNode current = _tail;
+                for (int i = Length - 2; i >= index; i--)
+                {
+                    current = current.Prev;
+                }
+                return current;
+            }
         }
 
         private void CheckIndex(int index)
@@ -518,17 +544,16 @@ namespace Lists
             }
         }
 
-
         private void Swap(int index)
         {
-            int tmp = GetNodeByIndex(index - 1).Value;
-            GetNodeByIndex(index - 1).Value = GetNodeByIndex(index).Value;
-            GetNodeByIndex(index).Value = tmp;
+            int tmp = GetNodeByIndex(index).Value;
+            GetNodeByIndex(index).Value = GetNodeByIndex(index).Prev.Value;
+            GetNodeByIndex(index).Prev.Value = tmp;
         }
 
-        private LinkedList CopyList(ILinkedList list)
+        private DoubleLinkedList CopyList(ILinkedList list)
         {
-            LinkedList copy = new LinkedList();
+            DoubleLinkedList copy = new DoubleLinkedList();
             for (int i = 0; i < list.GetLength(); i++)
             {
                 copy.Add(list[i]);
