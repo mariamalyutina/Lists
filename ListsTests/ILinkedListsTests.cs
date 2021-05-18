@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace ListsTests
 {
-    [TestFixture("LinkedList")] //вызывает конструктор тестового класса
+    [TestFixture("LinkedList")] //вызывает конструктор тестового класса 
     [TestFixture("DoubleLinkedList")]
     
 
@@ -21,30 +21,31 @@ namespace ListsTests
             type = s;
         }
 
-        public void SetUp(int[] inputArray, int[] expectedArray)
+        public void SetUp(int[] inputArray, int[] expectedArray = null)
         {
             switch (type)
             {
                 case "LinkedList":
                     actual = new LinkedList(inputArray);
-                    expected = new LinkedList(expectedArray);
+                    if (expectedArray is null)
+                    {
+                        expected = new LinkedList(new int[0]);
+                    }
+                    else
+                    {
+                        expected = new LinkedList(expectedArray);
+                    }
                     break;
                 case "DoubleLinkedList":
                     actual = new DoubleLinkedList(inputArray);
-                    expected = new DoubleLinkedList(expectedArray);
-                    break;
-            }
-        }
-
-        public void SetUpOneList(int[] inputArray)
-        {
-            switch (type)
-            {
-                case "LinkedList":
-                    actual = new LinkedList(inputArray);
-                    break;
-                case "DoubleLinkedList":
-                    actual = new DoubleLinkedList(inputArray);
+                    if (expectedArray is null)
+                    {
+                        expected = new DoubleLinkedList(new int[0]);
+                    }
+                    else
+                    {
+                        expected = new DoubleLinkedList(expectedArray);
+                    }
                     break;
             }
         }
@@ -102,7 +103,7 @@ namespace ListsTests
         [TestCase(new int[0], 9999, 1)]
         public void AddAtIndex_WhenIndexOutOfRange_IndexOutOfRangeException(int[] inputArray, int value, int index)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 actual.AddAtIndex(value, index);
@@ -128,7 +129,7 @@ namespace ListsTests
         [TestCase(new int[0])]
         public void Remove_WhenArrayIsEmpty_Exception(int[] inputArray)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 actual.Remove();
@@ -154,7 +155,7 @@ namespace ListsTests
         [TestCase(new int[0])]
         public void RemoveAtFirstIndex_WhenArrayIsEmpty_Exception(int[] inputArray)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 actual.RemoveAtFirstIndex();
@@ -180,7 +181,7 @@ namespace ListsTests
         [TestCase(new int[0], 0)]
         public void RemoveByIndex_WhenArrayIsEmpty_Exception(int[] inputArray, int index)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 actual.RemoveByIndex(index);
@@ -196,7 +197,7 @@ namespace ListsTests
         [TestCase(new int[] { 1, 2, 3, 4 }, 4)]
         public void RemoveByIndex_WhenIndexOutOfRange_IndexOutOfRangeException(int[] inputArray, int index)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 actual.RemoveByIndex(index);
@@ -213,7 +214,7 @@ namespace ListsTests
         [TestCase(new int[] { 1 }, 1)]
         public void GetLengthTest(int[] inputArray, int expected)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             int actual = this.actual.GetLength();
             Assert.AreEqual(expected, actual);
         }
@@ -232,7 +233,7 @@ namespace ListsTests
         [TestCase(new int[] { 1, 2, 3, 4 }, -5)]
         public void RemoveLastValues_WhenCountArgumentIsLessThanZero_ArgumentException(int[] inputArray, int count)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 actual.RemoveLastValues(count);
@@ -248,7 +249,7 @@ namespace ListsTests
         [TestCase(new int[] { 1, 2, 3, 4 }, 10)]
         public void RemoveLastValues_WhenListIsLessThanCountOrEmpty_Exception(int[] inputArray, int count)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 actual.RemoveLastValues(count);
@@ -276,7 +277,7 @@ namespace ListsTests
         [TestCase(new int[] { 1, 2, 3, 4 }, -5)]
         public void RemoveFirstValues_WhenCountArgumentIsLessThanZero_ArgumentException(int[] inputArray, int count)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 actual.RemoveFirstValues(count);
@@ -292,7 +293,7 @@ namespace ListsTests
         [TestCase(new int[] { 1, 2, 3, 4 }, 10)]
         public void RemoveFirstValues_WhenListIsLessThanCountOrEmpty_Exception(int[] inputArray, int count)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 actual.RemoveFirstValues(count);
@@ -324,7 +325,7 @@ namespace ListsTests
         [TestCase(new int[] { 1, 2, 3, 4 }, 1, 4)]
         public void RemoveValuesByIndex_WhenIndexOutOfRange_IndexOutOfRangeException(int[] inputArray, int count, int index)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 actual.RemoveValuesByIndex(count, index);
@@ -339,7 +340,7 @@ namespace ListsTests
         [TestCase(new int[] { 1, 2, 3, 4 }, -5, 0)]
         public void RemoveValuesByIndex_WhenCountArgumentIsLessThanZero_ArgumentException(int[] inputArray, int count, int index)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 actual.RemoveValuesByIndex(count, index);
@@ -356,7 +357,7 @@ namespace ListsTests
         [TestCase(new int[0], 10, 0)]
         public void RemoveValuesByIndex_WhenSubArrayIsLessThanCountOrArrayIsEmpty_Exception(int[] inputArray, int count, int index)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 actual.RemoveValuesByIndex(count, index);
@@ -374,7 +375,7 @@ namespace ListsTests
         [TestCase(new int[] { 1, 2, 3, 4 }, 1, 2)]
         public void GetValueByIndexTest(int[] inputArray, int index, int expected)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             int actual = this.actual[index];
             Assert.AreEqual(expected, actual);
         }
@@ -384,7 +385,7 @@ namespace ListsTests
         [TestCase(new int[] { 1, 2, 3, 4 }, -4)]
         public void GetValueByIndex_WhenIndexOutOfRange_IndexOutOfRangeException(int[] inputArray, int index)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 int value = this.actual[index];
@@ -413,7 +414,7 @@ namespace ListsTests
         [TestCase(new int[] { 1, 2, 3, 4 }, -4, 9)]
         public void SetValueByIndex_WhenIndexOutOfRange_IndexOutOfRangeException(int[] inputArray, int index, int value)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 actual[index] = value;
@@ -433,7 +434,7 @@ namespace ListsTests
         [TestCase(new int[0], 1, -1)]
         public void GetFirstIndexByValue(int[] inputArray, int value, int expected)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             int actual = this.actual.GetFirstIndexByValue(value);
 
             Assert.AreEqual(expected, actual);
@@ -456,7 +457,7 @@ namespace ListsTests
         [TestCase(new int[] { 0 }, 0)]
         public void GetMaxValueTest(int[] inputArray, int expected)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             int actual = this.actual.GetMaxValue();
 
             Assert.AreEqual(expected, actual);
@@ -465,7 +466,7 @@ namespace ListsTests
         [TestCase(new int[0])]
         public void GetMaxValue_WhenArrayIsEmpty_Exception(int[] inputArray)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 this.actual.GetMaxValue();
@@ -482,7 +483,7 @@ namespace ListsTests
         [TestCase(new int[] { 0 }, 0)]
         public void GetIndexOfMaxValueTest(int[] inputArray, int expected)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             int actual = this.actual.GetIndexOfMaxValue();
 
             Assert.AreEqual(expected, actual);
@@ -491,7 +492,7 @@ namespace ListsTests
         [TestCase(new int[0])]
         public void GetIndexOfMaxValue_WhenArrayIsEmpty_Exception(int[] inputArray)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 this.actual.GetIndexOfMaxValue();
@@ -508,7 +509,7 @@ namespace ListsTests
         [TestCase(new int[] { 0 }, 0)]
         public void GetMinValueTest(int[] inputArray, int expected)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             int actual = this.actual.GetMinValue();
 
             Assert.AreEqual(expected, actual);
@@ -517,7 +518,7 @@ namespace ListsTests
         [TestCase(new int[0])]
         public void GetMinValue_WhenArrayIsEmpty_Exception(int[] inputArray)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 this.actual.GetMinValue();
@@ -534,7 +535,7 @@ namespace ListsTests
         [TestCase(new int[] { 0 }, 0)]
         public void GetIndexOfMinValueTest(int[] inputArray, int expected)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             int actual = this.actual.GetIndexOfMinValue();
 
             Assert.AreEqual(expected, actual);
@@ -543,7 +544,7 @@ namespace ListsTests
         [TestCase(new int[0])]
         public void GetIndexOfMinValue_WhenArrayIsEmpty_Exception(int[] inputArray)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 this.actual.GetIndexOfMinValue();
@@ -587,7 +588,7 @@ namespace ListsTests
         [TestCase(new int[0], 10, -1)]
         public void RemoveFirstByValueTest(int[] inputArray, int value, int expected)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             int actual = this.actual.RemoveFirstByValue(value);
 
             Assert.AreEqual(expected, actual);
@@ -603,7 +604,7 @@ namespace ListsTests
         [TestCase(new int[0], 10, 0)]
         public void RemoveAllByValueTest(int[] inputArray, int value, int expected)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             int actual = this.actual.RemoveAllByValue(value);
 
             Assert.AreEqual(expected, actual);
@@ -618,15 +619,15 @@ namespace ListsTests
         public void AddListTest(int[] inputArray, int[] additionalArray, int[] expectedArray)
         {
             SetUp(inputArray, expectedArray);
-            ILinkedList additionalList = SetUpAdditionalList(additionalArray);
-            actual.AddList(additionalList);
+            additional = SetUpAdditionalList(additionalArray);
+            actual.AddList(additional);
             Assert.AreEqual(expected, actual);
         }
 
         [TestCase(new int[] { 1, 2, 3, 4 })]
         public void AddList_WhenArgumentIsNull_NullReferenceException(int[] inputArray)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
 
@@ -648,15 +649,15 @@ namespace ListsTests
         public void AddListAtBeginningTest(int[] inputArray, int[] additionalArray, int[] expectedArray)
         {
             SetUp(inputArray, expectedArray);
-            ILinkedList additionalList = SetUpAdditionalList(additionalArray);
-            actual.AddListAtBeginning(additionalList);
+            additional = SetUpAdditionalList(additionalArray);
+            actual.AddListAtBeginning(additional);
             Assert.AreEqual(expected, actual);
         }
 
         [TestCase(new int[] { 1, 2, 3, 4 })]
         public void AddListAtBeginning_WhenArgumentIsNull_NullReferenceException(int[] inputArray)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
 
@@ -681,8 +682,8 @@ namespace ListsTests
         public void AddListByIndexTest(int[] inputArray, int[] additionalArray, int index, int[] expectedArray)
         {
             SetUp(inputArray, expectedArray);
-            ILinkedList additionalList = SetUpAdditionalList(additionalArray);
-            actual.AddListByIndex(additionalList, index);
+            additional = SetUpAdditionalList(additionalArray);
+            actual.AddListByIndex(additional, index);
             Assert.AreEqual(expected, actual);
         }
 
@@ -690,7 +691,7 @@ namespace ListsTests
         [TestCase(new int[] { 1, 2, 3, 4 }, new int[] { 1, 2 }, -4)]
         public void AddListByIndex_WhenIndexOutOfRange_IndexOutOfRangeException(int[] inputArray, int[] additionalArray, int index)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
                 ILinkedList additionalList = SetUpAdditionalList(additionalArray);
@@ -706,7 +707,7 @@ namespace ListsTests
         [TestCase(new int[] { 1, 2, 3, 4 }, 0)]
         public void AddListByIndex_WhenArgumentIsNull_NullReferenceException(int[] inputArray, int index)
         {
-            SetUpOneList(inputArray);
+            SetUp(inputArray);
             try
             {
 
@@ -742,19 +743,6 @@ namespace ListsTests
             actual.AddList(SetUpAdditionalList(new int[] { 100, 200 }));
             actual.AddListAtBeginning(SetUpAdditionalList(new int[] { 99, 88, 77 }));
             actual.AddAtFirstIndex(100);
-
-            //actual.AddListByIndex(SetUpAdditionalList(new int[] { 88, 96 }), 1);
-            //actual.Add(8);
-            //actual.Remove();
-            //actual.AddAtFirstIndex(100);
-            //actual.Add(8);
-            //actual.Remove();
-            //actual.RemoveAtFirstIndex();
-            //actual.Add(8);
-            //actual.RemoveFirstValues(2);
-            //actual.AddList(SetUpAdditionalList(new int[] { 100, 200 }));
-            //actual.Reverse(); 200, 100, 8, 5, 4, 3, 2, 96
-
             Assert.AreEqual(expected, actual);
         }
 
