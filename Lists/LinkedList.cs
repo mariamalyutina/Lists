@@ -395,9 +395,10 @@ namespace Lists
                 }
                 else //добавление в середину
                 {
-                    copyList._tail.Next = this.GetNodeByIndex(index);
                     int prevIndex = index - 1;
-                    this.GetNodeByIndex(prevIndex).Next = copyList._head;
+                    Node tmp = this.GetNodeByIndex(prevIndex);
+                    copyList._tail.Next = tmp.Next;
+                    tmp.Next = copyList._head;
                 }
             }
             this.Length += copyList.Length;

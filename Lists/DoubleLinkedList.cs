@@ -144,8 +144,9 @@ namespace Lists
             }
             else
             {
-                GetNodeByIndex(index).Prev.Next = GetNodeByIndex(index).Next;
-                GetNodeByIndex(index).Next.Prev = GetNodeByIndex(index).Prev;
+                DoubleNode tmp = GetNodeByIndex(index);
+                tmp.Prev.Next = tmp.Next;
+                tmp.Next.Prev = tmp.Prev;
             }
             Length = Length == 0 ? 0 : --Length;
         }
