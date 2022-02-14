@@ -31,7 +31,7 @@ namespace ListsTests
         }
 
 
-        [TestCase(new int[] { 1, 2, 3, 4 }, 8, new int[] { 1, 2, 3, 4, 8 })]
+        [TestCase(new int[] { 1, 2, 3, 4, 5 }, 8, new int[] { 1, 2, 3, 4, 5, 8 })]
         [TestCase(new int[0], 8, new int[] { 8 })]
         [TestCase(new int[] { 1 }, 8, new int[] { 1, 8 })]
         public void AddTest(int[] inputArray, int value, int[] expectedArray)
